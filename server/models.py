@@ -12,8 +12,29 @@ class Author(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    @validates("name")
+    def validate_name(self, key, name):
+        
+        if not names:
+            raise ValueError("Author must ust have name")
+        
+        return name
+
+
+    # All authors have a name.
+    @validates("phone_number")
+    def validate_phone_number(self, key, phone_number):
+
+        if len(phone_number) != 10:
+            raise ValueError("")
+
+        return phone_number
+
+
+    # Author phone numbers are exactly ten digits.
     def __repr__(self):
         return f'Author(id={self.id}, name={self.name})'
+
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -27,6 +48,59 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    
+    @validates("title")
+    def validate_title(self, key, title):
+        # All posts have a title.
+        if not title:
+            raise ValueError("All posts have a title.")
+
+        # The validator should add a validation error if the title does not contain:
+        words_to_check = ["Won't Believe", "Secret", "Top [number]", "Guess"]
+        for word in words_to_check:
+            if word not in title:
+                raise ValueError(f"The title does not contain {word}")
+
+        return title
+
+
+    # Post content is at least 250 characters long.
+    @validates("content")
+    def validate_content(self, key, content):
+
+        if len(content) <= 250:
+            raise ValueError("Post content is at least 250 characters long.")
+
+        return content
+
+    
+    # Post summary is a maximum of 250 characters.
+    @validates("summary")
+    def validate_summary(self, key, summary):
+
+        if len(summary) >250:
+            raise ValueError("Post summary is a maximum of 250 characters.")
+
+        return summary
+
+    
+    # Post category is either Fiction or Non-Fiction.
+    @validates("category")
+    def validate_category(self, key, category):
+
+        categories = ["Fiction", "Non-fiction"]
+        
+        if category not in categories: 
+            raise ValueError("Post category is either Fiction or Non-Fiction.")
 
     def __repr__(self):
         return f'Post(id={self.id}, title={self.title} content={self.content}, summary={self.summary})'
+
+
+    # Finally, add a custom validator to the Post model that ensures the title is sufficiently clickbait-y. 
+    # The validator should add a validation error if the title does not contain:
+
+"Won't Believe"
+"Secret"
+"Top [number]"
+"Guess"
