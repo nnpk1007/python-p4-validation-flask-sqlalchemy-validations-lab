@@ -80,7 +80,7 @@ class Post(db.Model):
     @validates("summary")
     def validate_summary(self, key, summary):
 
-        if len(summary) >250:
+        if len(summary) >= 250:
             raise ValueError("Post summary is a maximum of 250 characters.")
 
         return summary
