@@ -15,7 +15,7 @@ class Author(db.Model):
     @validates("name")
     def validate_name(self, key, name):
         
-        if not names:
+        if not name:
             raise ValueError("Author must ust have name")
         
         return name
@@ -51,18 +51,20 @@ class Post(db.Model):
     
     @validates("title")
     def validate_title(self, key, title):
-        # All posts have a title.
+        # All posts must have a title.
         if not title:
-            raise ValueError("All posts have a title.")
-
-        # The validator should add a validation error if the title does not contain:
+            raise ValueError("Each post must have a title.")
+        
+        # Words to check for in the title
         words_to_check = ["Won't Believe", "Secret", "Top [number]", "Guess"]
-        for word in words_to_check:
-            if word not in title:
-                raise ValueError(f"The title does not contain {word}")
+        
+        # Check if at least one of the specified words is present in the title
+        absent_words = [word for word in words_to_check if word in title]
+        
+        if not absent_words:
+            raise ValueError("The title must contain at least one of the specified words.")
 
         return title
-
 
     # Post content is at least 250 characters long.
     @validates("content")
@@ -88,10 +90,12 @@ class Post(db.Model):
     @validates("category")
     def validate_category(self, key, category):
 
-        categories = ["Fiction", "Non-fiction"]
+        categories = ["Fiction", "Non-Fiction"]
         
         if category not in categories: 
             raise ValueError("Post category is either Fiction or Non-Fiction.")
+
+        return category
 
     def __repr__(self):
         return f'Post(id={self.id}, title={self.title} content={self.content}, summary={self.summary})'
