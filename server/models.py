@@ -59,9 +59,9 @@ class Post(db.Model):
         words_to_check = ["Won't Believe", "Secret", "Top [number]", "Guess"]
         
         # Check if at least one of the specified words is present in the title
-        absent_words = [word for word in words_to_check if word in title]
+        specified_words = [word for word in words_to_check if word in title]
         
-        if not absent_words:
+        if not specified_words:
             raise ValueError("The title must contain at least one of the specified words.")
 
         return title
